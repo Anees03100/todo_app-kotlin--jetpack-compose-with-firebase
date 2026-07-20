@@ -58,6 +58,9 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
 
     var editingTodo by remember { mutableStateOf<Todo?>(null) }
 
+    val totalTasks = viewModel.todos.size
+    val completedTasks = viewModel.todos.count { it.isDone }
+
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
