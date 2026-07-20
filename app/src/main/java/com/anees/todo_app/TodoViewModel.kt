@@ -38,6 +38,11 @@ class TodoViewModel : ViewModel() {
         collection.document(todo.id).update("isDone", !todo.isDone)
     }
 
+    fun updateTodoText(todo: Todo, newTaskText: String){
+        if(newTaskText.isBlank()) return
+        collection.document(todo.id).update("task", newTaskText)
+    }
+
     fun deleteTodo(todo:Todo){
         collection.document(todo.id).delete()
     }

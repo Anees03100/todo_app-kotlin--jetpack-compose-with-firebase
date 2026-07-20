@@ -56,6 +56,8 @@ class MainActivity : ComponentActivity() {
 fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewModel()) {
     var text by remember { mutableStateOf("") }
 
+    var editingTodo by remember { mutableStateOf<Todo?>(null) }
+
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -64,15 +66,19 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
             OutlinedTextField(
                 value = text,
                 onValueChange = { text = it },
-                label = { Text("New Task") },
-                modifier = Modifier.weight(1f)
+                label = { Text(if (editingTodo != null) "Edit Task" else "New Task") },                modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = {
-                viewModel.addTodo(text)
+                if (editingTodo != null) {
+                    viewModel.updateTodoText(editingTodo!!, text)
+                    editingTodo = null
+                } else {
+                    viewModel.addTodo(text)
+                }
                 text = ""
             }) {
-                Text("Add")
+                Text(if (editingTodo != null) "Update" else "Add")
             }
         }
 
@@ -96,8 +102,11 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                         text = todo.task,
                         modifier = Modifier.weight(1f)
                     )
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Edit, contentDescription = "edit");
+                    IconButton(onClick = {
+                        text = todo.task
+                        editingTodo = todo
+                    }) {
+                        Icon(Icons.Default.Edit, contentDescription = "Edit")
                     }
                     IconButton(onClick = { viewModel.deleteTodo(todo) }) {
                         Icon(Icons.Default.Delete, contentDescription = "Delete")
