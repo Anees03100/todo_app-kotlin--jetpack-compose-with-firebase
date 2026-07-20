@@ -62,6 +62,12 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
     val completedTasks = viewModel.todos.count { it.isDone }
 
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
+        Text(
+            text = "Completed: $completedTasks / $totalTasks",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
