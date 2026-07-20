@@ -34,6 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.anees.todo_app.ui.theme.Todo_appTheme
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.graphics.Color
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,7 +86,11 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                 ) {
                     Checkbox(
                         checked = todo.isDone,
-                        onCheckedChange = { viewModel.toggleTodo(todo) }
+                        onCheckedChange = { viewModel.toggleTodo(todo) },
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = MaterialTheme.colorScheme.primary,
+                            checkmarkColor = Color.White
+                        )
                     )
                     Text(
                         text = todo.task,
