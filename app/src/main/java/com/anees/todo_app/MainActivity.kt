@@ -37,6 +37,7 @@ import com.anees.todo_app.ui.theme.Todo_appTheme
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextDecoration
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,16 +110,25 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                     )
                     Text(
                         text = todo.task,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        textDecoration = if (todo.isDone) TextDecoration.LineThrough else TextDecoration.None
                     )
                     IconButton(onClick = {
                         text = todo.task
                         editingTodo = todo
                     }) {
-                        Icon(Icons.Default.Edit, contentDescription = "Edit")
+                        Icon(
+                            Icons.Default.Edit,
+                            contentDescription = "Edit",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
                     IconButton(onClick = { viewModel.deleteTodo(todo) }) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete")
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
             }
