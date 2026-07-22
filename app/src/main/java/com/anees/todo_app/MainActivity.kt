@@ -167,7 +167,6 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                             )
                         }
                     }
-
                 }
             }
         }
