@@ -1,6 +1,7 @@
 package com.anees.todo_app
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -39,6 +40,7 @@ import com.anees.todo_app.ui.theme.Todo_appTheme
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 
 class MainActivity : ComponentActivity() {
@@ -59,6 +61,7 @@ class MainActivity : ComponentActivity() {
 fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewModel()) {
     var text by remember { mutableStateOf("") }
     var editTaskText by remember {mutableStateOf("")}
+    val context = LocalContext.current.applicationContext
 
     var editingTodo by remember { mutableStateOf<Todo?>(null) }
 
@@ -84,8 +87,12 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
             )
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = {
-                viewModel.addTodo(text)
-                text = ""
+                if (text.isBlank()) {
+                    Toast.makeText(context, "Please enter a task", Toast.LENGTH_SHORT).show()
+                }else{
+                    viewModel.addTodo(text)
+                    text = ""
+                }
             }) {
                 Text("Add")
             }
