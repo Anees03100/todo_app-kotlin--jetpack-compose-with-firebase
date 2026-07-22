@@ -88,7 +88,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = {
                 if (text.isBlank()) {
-                    Toast.makeText(context, "Please enter a task", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Please enter a Task", Toast.LENGTH_SHORT).show()
                 }else{
                     viewModel.addTodo(text)
                     text = ""
