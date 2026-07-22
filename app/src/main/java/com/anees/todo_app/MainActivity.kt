@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
@@ -56,6 +58,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewModel()) {
     var text by remember { mutableStateOf("") }
+    var editTaskText by remember {mutableStateOf("")}
 
     var editingTodo by remember { mutableStateOf<Todo?>(null) }
 
@@ -76,19 +79,15 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
             OutlinedTextField(
                 value = text,
                 onValueChange = { text = it },
-                label = { Text(if (editingTodo != null) "Edit Task" else "New Task") },                modifier = Modifier.weight(1f)
+                label = { Text("New Task") },
+                modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = {
-                if (editingTodo != null) {
-                    viewModel.updateTodoText(editingTodo!!, text)
-                    editingTodo = null
-                } else {
-                    viewModel.addTodo(text)
-                }
+                viewModel.addTodo(text)
                 text = ""
             }) {
-                Text(if (editingTodo != null) "Update" else "Add")
+                Text("Add")
             }
         }
 
@@ -108,28 +107,60 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                             checkmarkColor = Color.White
                         )
                     )
-                    Text(
-                        text = todo.task,
-                        modifier = Modifier.weight(1f),
-                        textDecoration = if (todo.isDone) TextDecoration.LineThrough else TextDecoration.None
-                    )
-                    IconButton(onClick = {
-                        text = todo.task
-                        editingTodo = todo
-                    }) {
-                        Icon(
-                            Icons.Default.Edit,
-                            contentDescription = "Edit",
-                            tint = MaterialTheme.colorScheme.primary
+
+                    if(editingTodo?.id == todo.id) {
+                        Row() {
+                            OutlinedTextField(
+                                modifier = Modifier.weight(1f),
+                                value = editTaskText,
+                                onValueChange = {editTaskText = it}
+                            )
+                            IconButton(onClick = {
+                                viewModel.updateTodoText(todo, editTaskText)
+                                editingTodo = null
+                            }) {
+                                Icon(
+                                    Icons.Default.Check,
+                                    contentDescription = "Check",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                            IconButton(onClick = {
+                                editingTodo = null
+                            }) {
+                                Icon(
+                                    Icons.Default.Close,
+                                    contentDescription = "Close",
+                                    tint = Color.Red,
+                                )
+                            }
+                        }
+
+                    }else{
+                        Text(
+                            text = todo.task,
+                            modifier = Modifier.weight(1f),
+                            textDecoration = if (todo.isDone) TextDecoration.LineThrough else TextDecoration.None
                         )
+                        IconButton(onClick = {
+                            editTaskText = todo.task
+                            editingTodo = todo
+                        }) {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = "Edit",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        IconButton(onClick = { viewModel.deleteTodo(todo) }) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = "Delete",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
-                    IconButton(onClick = { viewModel.deleteTodo(todo) }) {
-                        Icon(
-                            Icons.Default.Delete,
-                            contentDescription = "Delete",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
+
                 }
             }
         }
