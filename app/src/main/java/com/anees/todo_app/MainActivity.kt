@@ -5,6 +5,9 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -38,10 +42,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.anees.todo_app.ui.theme.Todo_appTheme
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.sp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,10 +80,32 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
 
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
         Text(
-            text = "Completed: $completedTasks / $totalTasks",
+            text = "Todo App",
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(bottom = 16.dp)
         )
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Spacer(modifier = Modifier.width(1.dp))
+            Box(modifier = Modifier.width(150.dp).height(150.dp).clip(shape = RoundedCornerShape(40.dp)).background(color = MaterialTheme.colorScheme.primary)) {
+                Column(modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = "Completed", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(text = "$completedTasks", color = Color.White, fontSize = 40.sp)
+                }
+            }
+            Box(modifier = Modifier.width(150.dp).height(150.dp).clip(shape = RoundedCornerShape(40.dp)).background(color = MaterialTheme.colorScheme.primary)) {
+                Column(modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = "Total", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(text = "$totalTasks", color = Color.White, fontSize = 40.sp)
+                }
+            }
+            Spacer(modifier = Modifier.width(1.dp))
+
+        }
+        Spacer(modifier = Modifier.height(15.dp))
+        HorizontalDivider(thickness = 3.dp, color = MaterialTheme.colorScheme.primary)
+        Spacer(modifier = Modifier.height(15.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -97,7 +129,6 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                 Text("Add")
             }
         }
-
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn {
@@ -114,7 +145,6 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                             checkmarkColor = Color.White
                         )
                     )
-
                     if(editingTodo?.id == todo.id) {
                         Row() {
                             OutlinedTextField(
@@ -125,7 +155,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                             IconButton(onClick = {
                                 viewModel.updateTodoText(todo, editTaskText)
                                 editingTodo = null
-                            }) {
+                            }){
                                 Icon(
                                     Icons.Default.Check,
                                     contentDescription = "Check",
@@ -134,7 +164,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                             }
                             IconButton(onClick = {
                                 editingTodo = null
-                            }) {
+                            }){
                                 Icon(
                                     Icons.Default.Close,
                                     contentDescription = "Close",
@@ -142,7 +172,6 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                                 )
                             }
                         }
-
                     }else{
                         Text(
                             text = todo.task,
