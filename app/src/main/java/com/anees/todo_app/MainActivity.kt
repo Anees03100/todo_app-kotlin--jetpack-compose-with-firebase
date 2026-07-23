@@ -42,13 +42,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.anees.todo_app.ui.theme.Todo_appTheme
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -85,6 +84,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
         Text(
             text = "Todo App",
             style = MaterialTheme.typography.headlineSmall,
+            fontFamily = FontFamily.Serif,
             modifier = Modifier.padding(bottom = 16.dp)
         )
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -104,10 +104,13 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                         text = "Completed",
                         color = Color.White,
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold
+                        fontWeight = FontWeight.ExtraBold,
+                        fontFamily = FontFamily.Serif
                     )
                     Spacer(modifier = Modifier.height(30.dp))
-                    Text(text = "$completedTasks", color = Color.White, fontSize = 40.sp)
+                    Text(text = "$completedTasks", color = Color.White, fontSize = 40.sp,
+                        fontFamily = FontFamily.Cursive
+                    )
                 }
             }
             Box(
@@ -125,10 +128,15 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                         text = "Total",
                         color = Color.White,
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold
+                        fontWeight = FontWeight.ExtraBold,
+                        fontFamily = FontFamily.Serif
                     )
                     Spacer(modifier = Modifier.height(30.dp))
-                    Text(text = "$totalTasks", color = Color.White, fontSize = 40.sp)
+                    Text(text = "$totalTasks",
+                        color = Color.White,
+                        fontSize = 40.sp,
+                        fontFamily = FontFamily.Cursive
+                    )
                 }
             }
             Spacer(modifier = Modifier.width(1.dp))
@@ -212,6 +220,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                         Text(
                             text = todo.task,
                             modifier = Modifier.weight(1f),
+                            fontFamily = FontFamily.Serif,
                             textDecoration = if (todo.isDone) TextDecoration.LineThrough else TextDecoration.None
                         )
                         IconButton(onClick = {
@@ -235,5 +244,12 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                 }
             }
         }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun TodoScreenPreview() {
+    Todo_appTheme {
+        TodoScreen()
     }
 }
