@@ -78,7 +78,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
     val totalTasks = viewModel.todos.size
     val completedTasks = viewModel.todos.count { it.isDone }
 
-    Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = modifier.fillMaxSize().padding(12.dp)) {
         Text(
             text = "Todo App",
             style = MaterialTheme.typography.headlineSmall,
@@ -101,10 +101,9 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                 }
             }
             Spacer(modifier = Modifier.width(1.dp))
-
         }
         Spacer(modifier = Modifier.height(15.dp))
-        HorizontalDivider(thickness = 3.dp, color = MaterialTheme.colorScheme.primary)
+        HorizontalDivider(thickness = 3.dp, color = MaterialTheme.colorScheme.primary,modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(15.dp))
 
         Row(
