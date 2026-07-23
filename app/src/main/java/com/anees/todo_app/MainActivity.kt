@@ -51,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 
 class MainActivity : ComponentActivity() {
@@ -70,7 +71,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewModel()) {
     var text by remember { mutableStateOf("") }
-    var editTaskText by remember {mutableStateOf("")}
+    var editTaskText by remember { mutableStateOf("") }
     val context = LocalContext.current.applicationContext
 
     var editingTodo by remember { mutableStateOf<Todo?>(null) }
@@ -78,7 +79,9 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
     val totalTasks = viewModel.todos.size
     val completedTasks = viewModel.todos.count { it.isDone }
 
-    Column(modifier = modifier.fillMaxSize().padding(12.dp)) {
+    Column(modifier = modifier
+        .fillMaxSize()
+        .padding(12.dp)) {
         Text(
             text = "Todo App",
             style = MaterialTheme.typography.headlineSmall,
@@ -86,16 +89,44 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
         )
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Spacer(modifier = Modifier.width(1.dp))
-            Box(modifier = Modifier.width(150.dp).height(150.dp).clip(shape = RoundedCornerShape(40.dp)).background(color = MaterialTheme.colorScheme.primary)) {
-                Column(modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "Completed", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+            Box(
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(150.dp)
+                    .clip(shape = RoundedCornerShape(40.dp))
+                    .background(color = MaterialTheme.colorScheme.primary)
+            ) {
+                Column(
+                    modifier = Modifier.align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Completed",
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(text = "$completedTasks", color = Color.White, fontSize = 40.sp)
                 }
             }
-            Box(modifier = Modifier.width(150.dp).height(150.dp).clip(shape = RoundedCornerShape(40.dp)).background(color = MaterialTheme.colorScheme.primary)) {
-                Column(modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "Total", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+            Box(
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(150.dp)
+                    .clip(shape = RoundedCornerShape(40.dp))
+                    .background(color = MaterialTheme.colorScheme.primary)
+            ) {
+                Column(
+                    modifier = Modifier.align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Total",
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(text = "$totalTasks", color = Color.White, fontSize = 40.sp)
                 }
@@ -103,7 +134,11 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
             Spacer(modifier = Modifier.width(1.dp))
         }
         Spacer(modifier = Modifier.height(15.dp))
-        HorizontalDivider(thickness = 3.dp, color = MaterialTheme.colorScheme.primary,modifier = Modifier.fillMaxWidth())
+        HorizontalDivider(
+            thickness = 3.dp,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(15.dp))
 
         Row(
@@ -120,7 +155,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
             Button(onClick = {
                 if (text.isBlank()) {
                     Toast.makeText(context, "Please enter a Task", Toast.LENGTH_SHORT).show()
-                }else{
+                } else {
                     viewModel.addTodo(text)
                     text = ""
                 }
@@ -133,7 +168,9 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
         LazyColumn {
             items(viewModel.todos) { todo ->
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Checkbox(
@@ -144,17 +181,17 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                             checkmarkColor = Color.White
                         )
                     )
-                    if(editingTodo?.id == todo.id) {
+                    if (editingTodo?.id == todo.id) {
                         Row() {
                             OutlinedTextField(
                                 modifier = Modifier.weight(1f),
                                 value = editTaskText,
-                                onValueChange = {editTaskText = it}
+                                onValueChange = { editTaskText = it }
                             )
                             IconButton(onClick = {
                                 viewModel.updateTodoText(todo, editTaskText)
                                 editingTodo = null
-                            }){
+                            }) {
                                 Icon(
                                     Icons.Default.Check,
                                     contentDescription = "Check",
@@ -163,7 +200,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                             }
                             IconButton(onClick = {
                                 editingTodo = null
-                            }){
+                            }) {
                                 Icon(
                                     Icons.Default.Close,
                                     contentDescription = "Close",
@@ -171,7 +208,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                                 )
                             }
                         }
-                    }else{
+                    } else {
                         Text(
                             text = todo.task,
                             modifier = Modifier.weight(1f),
