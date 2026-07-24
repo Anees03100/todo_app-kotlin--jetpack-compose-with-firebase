@@ -21,12 +21,10 @@ class TodoViewModel : ViewModel() {
             if (error != null || snapshot == null) {
                 return@addSnapshotListener
             }
-
             todos.clear()
             todos.addAll(snapshot.toObjects(Todo::class.java))
         }
     }
-
     fun addTodo(task: String){
         if(task.isBlank())return
         val id = collection.document().id
