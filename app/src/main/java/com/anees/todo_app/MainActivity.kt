@@ -198,7 +198,6 @@ fun TodoScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn {
-            // 3. Pass key for stable list updates
             items(items = todos, key = { it.id }) { todo ->
                 Row(
                     modifier = Modifier
