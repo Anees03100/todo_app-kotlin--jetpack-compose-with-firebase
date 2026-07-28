@@ -26,24 +26,22 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.anees.todo_app.ui.theme.Todo_appTheme
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -51,7 +49,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.anees.todo_app.ui.theme.Todo_appTheme
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,26 +72,42 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewModel()) {
+fun TodoScreen(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val viewModel: TodoViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val database = TodoDatabase.getDatabase(context)
+                val repository = TodoRepository(database.todoDao(), FirebaseFirestore.getInstance())
+                return TodoViewModel(repository) as T
+            }
+        }
+    )
     var text by remember { mutableStateOf("") }
     var editTaskText by remember { mutableStateOf("") }
-    val context = LocalContext.current.applicationContext
 
     var editingTodo by remember { mutableStateOf<Todo?>(null) }
 
-    val totalTasks = viewModel.todos.size
-    val completedTasks = viewModel.todos.count { it.isDone }
+    val todos by viewModel.todos.collectAsState()
 
-    Column(modifier = modifier
-        .fillMaxSize()
-        .padding(12.dp)) {
+    val totalTasks = todos.size
+    val completedTasks = todos.count { it.isDone }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(12.dp)
+    ) {
         Text(
             text = "Todo App",
             style = MaterialTheme.typography.headlineSmall,
             fontFamily = FontFamily.Serif,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Spacer(modifier = Modifier.width(1.dp))
             Box(
                 modifier = Modifier
@@ -108,7 +128,10 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                         fontFamily = FontFamily.Serif
                     )
                     Spacer(modifier = Modifier.height(30.dp))
-                    Text(text = "$completedTasks", color = Color.White, fontSize = 40.sp,
+                    Text(
+                        text = "$completedTasks",
+                        color = Color.White,
+                        fontSize = 40.sp,
                         fontFamily = FontFamily.Cursive
                     )
                 }
@@ -132,7 +155,8 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                         fontFamily = FontFamily.Serif
                     )
                     Spacer(modifier = Modifier.height(30.dp))
-                    Text(text = "$totalTasks",
+                    Text(
+                        text = "$totalTasks",
                         color = Color.White,
                         fontSize = 40.sp,
                         fontFamily = FontFamily.Cursive
@@ -174,7 +198,8 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn {
-            items(viewModel.todos) { todo ->
+            // 3. Pass key for stable list updates
+            items(items = todos, key = { it.id }) { todo ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -190,7 +215,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
                         )
                     )
                     if (editingTodo?.id == todo.id) {
-                        Row() {
+                        Row {
                             OutlinedTextField(
                                 modifier = Modifier.weight(1f),
                                 value = editTaskText,
@@ -246,6 +271,7 @@ fun TodoScreen(modifier: Modifier = Modifier, viewModel: TodoViewModel = viewMod
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun TodoScreenPreview() {

@@ -24,4 +24,21 @@ interface TodoDao {
 @Database(entities = [Todo::class], version = 1, exportSchema = false)
 abstract class TodoDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: TodoDatabase? = null
+
+        fun getDatabase(context: android.content.Context): TodoDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = androidx.room.Room.databaseBuilder(
+                    context.applicationContext,
+                    TodoDatabase::class.java,
+                    "todo_database"
+                ).build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
 }

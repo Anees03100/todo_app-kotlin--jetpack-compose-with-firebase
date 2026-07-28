@@ -1,47 +1,44 @@
 package com.anees.todo_app
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
-class TodoViewModel : ViewModel() {
-    private val db = Firebase.firestore
-    private val collection = db.collection("todos")
+class TodoViewModel(private val repository: TodoRepository) : ViewModel() {
 
-    var todos = mutableStateListOf<Todo>()
-        private set
+    // Convert the Room Flow into a StateFlow for Compose to observe
+    val todos: StateFlow<List<Todo>> = repository.allTodos.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 
-    init {
-        fetchTodos()
-    }
-
-    private fun fetchTodos() {
-        collection.addSnapshotListener { snapshot, error ->
-            if (error != null || snapshot == null) {
-                return@addSnapshotListener
-            }
-            todos.clear()
-            todos.addAll(snapshot.toObjects(Todo::class.java))
+    fun addTodo(task: String) {
+        if (task.isBlank()) return
+        viewModelScope.launch {
+            repository.addTodo(task)
         }
     }
-    fun addTodo(task: String){
-        if(task.isBlank())return
-        val id = collection.document().id
-        val todo = Todo(id = id , task = task)
-        collection.document(id).set(todo)
+
+    fun toggleTodo(todo: Todo) {
+        viewModelScope.launch {
+            repository.toggleTodo(todo)
+        }
     }
 
-    fun toggleTodo(todo: Todo){
-        collection.document(todo.id).update("isDone", !todo.isDone)
+    fun updateTodoText(todo: Todo, newTaskText: String) {
+        if (newTaskText.isBlank()) return
+        viewModelScope.launch {
+            repository.updateTodoText(todo, newTaskText)
+        }
     }
 
-    fun updateTodoText(todo: Todo, newTaskText: String){
-        if(newTaskText.isBlank()) return
-        collection.document(todo.id).update("task", newTaskText)
-    }
-
-    fun deleteTodo(todo:Todo){
-        collection.document(todo.id).delete()
+    fun deleteTodo(todo: Todo) {
+        viewModelScope.launch {
+            repository.deleteTodo(todo)
+        }
     }
 }
