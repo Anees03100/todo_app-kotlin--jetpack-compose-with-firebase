@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -20,6 +21,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+
+            // This forces KSP to utilize AGP's modern SourceSet channels
+            arg("room.generateKotlin", "true")
+        }
     }
 
     buildTypes {
@@ -48,6 +55,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
+
     // 1. Firebase BoM controls the versions
     implementation(platform("com.google.firebase:firebase-bom:34.16.0"))
 
@@ -58,6 +66,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
 
     implementation("androidx.compose.material:material-icons-extended")
+
+    // 3. New KSP-Powered Jetpack Room Implementation
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler) // Runs the KSP annotation processor
+
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
