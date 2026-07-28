@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 
 class TodoViewModel(private val repository: TodoRepository) : ViewModel() {
 
-    // Convert the Room Flow into a StateFlow for Compose to observe
     val todos: StateFlow<List<Todo>> = repository.allTodos.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
