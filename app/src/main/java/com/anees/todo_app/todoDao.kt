@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TodoDao {
-    @Query("SELECT * FROM todos")
+    @Query("SELECT * FROM todos ORDER BY createdAt DESC")
     fun getAllTodos(): Flow<List<Todo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -21,7 +21,7 @@ interface TodoDao {
     suspend fun deleteTodo(todo: Todo)
 }
 
-@Database(entities = [Todo::class], version = 1, exportSchema = false)
+@Database(entities = [Todo::class], version = 2, exportSchema = false)
 abstract class TodoDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDao
 
@@ -35,7 +35,9 @@ abstract class TodoDatabase : RoomDatabase() {
                     context.applicationContext,
                     TodoDatabase::class.java,
                     "todo_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }

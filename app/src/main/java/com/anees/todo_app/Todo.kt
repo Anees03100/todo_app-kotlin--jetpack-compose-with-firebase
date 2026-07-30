@@ -12,5 +12,7 @@ data class Todo(
 
     @get:PropertyName("isDone")
     @set:PropertyName("isDone")
-    var isDone: Boolean = false
+    var isDone: Boolean = false,
+
+    val createdAt: Long = System.currentTimeMillis()
 )
