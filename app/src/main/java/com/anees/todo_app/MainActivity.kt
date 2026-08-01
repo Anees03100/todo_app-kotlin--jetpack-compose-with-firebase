@@ -115,7 +115,7 @@ fun TodoScreen(modifier: Modifier = Modifier) {
                     .height(150.dp)
                     .clip(shape = RoundedCornerShape(40.dp))
                     .background(color = MaterialTheme.colorScheme.primary)
-            ) {
+            ){
                 Column(
                     modifier = Modifier.align(Alignment.Center),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -142,7 +142,7 @@ fun TodoScreen(modifier: Modifier = Modifier) {
                     .height(150.dp)
                     .clip(shape = RoundedCornerShape(40.dp))
                     .background(color = MaterialTheme.colorScheme.primary)
-            ) {
+            ){
                 Column(
                     modifier = Modifier.align(Alignment.Center),
                     horizontalAlignment = Alignment.CenterHorizontally
