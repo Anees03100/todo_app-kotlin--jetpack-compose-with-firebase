@@ -1,11 +1,13 @@
 package com.anees.todo_app
 
 import androidx.room.*
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TodoDao {
-    @Query("SELECT * FROM todos ORDER BY createdAt DESC")
+    @Query("SELECT * FROM todos ORDER BY isDone ASC, createdAt DESC")
     fun getAllTodos(): Flow<List<Todo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -21,13 +23,18 @@ interface TodoDao {
     suspend fun deleteTodo(todo: Todo)
 }
 
-@Database(entities = [Todo::class], version = 2, exportSchema = false)
+@Database(entities = [Todo::class], version = 3, exportSchema = false)
 abstract class TodoDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDao
 
     companion object {
         @Volatile
         private var INSTANCE: TodoDatabase? = null
+
+        private val MIGRATION_2_3 = object: Migration(2,3){
+            override  fun migrate(db: SupportSQLiteDatabase){
+                db.execSQL("ALTER TABLE todos ADD COLUMN createdAt INTEGER NOT NULL DEFAULT 0")            }
+        }
 
         fun getDatabase(context: android.content.Context): TodoDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -36,7 +43,7 @@ abstract class TodoDatabase : RoomDatabase() {
                     TodoDatabase::class.java,
                     "todo_database"
                 )
-                    .fallbackToDestructiveMigration()
+                    .addMigrations(MIGRATION_2_3)
                     .build()
                 INSTANCE = instance
                 instance
