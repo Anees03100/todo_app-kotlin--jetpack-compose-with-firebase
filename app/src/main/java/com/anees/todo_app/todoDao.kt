@@ -4,7 +4,6 @@ import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
-
 @Dao
 interface TodoDao {
     @Query("SELECT * FROM todos ORDER BY isDone ASC, createdAt DESC")
