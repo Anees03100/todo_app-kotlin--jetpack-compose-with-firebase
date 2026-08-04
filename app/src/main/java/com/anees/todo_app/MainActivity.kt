@@ -235,7 +235,7 @@ fun TodoScreen(modifier: Modifier = Modifier) {
                             }) {
                                 Icon(
                                     Icons.Default.Close,
-                                    contentDescription = "Close",
+                                    contentDescription = "close",
                                     tint = Color.Red,
                                 )
                             }
